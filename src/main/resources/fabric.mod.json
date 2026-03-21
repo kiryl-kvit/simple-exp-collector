@@ -1,0 +1,40 @@
+{
+	"schemaVersion": 1,
+	"id": "simple-exp-collector",
+	"version": "${version}",
+	"name": "Simple Exp Collector",
+	"description": "Simple server-side experience collector with optional client support",
+	"authors": ["Kiryl Kvit"],
+	"contact": {
+		"homepage": "https://github.com/kiryl-kvit/simple-exp-collector",
+		"sources": "https://github.com/kiryl-kvit/simple-exp-collector"
+	},
+	"license": "CC0-1.0",
+	"icon": "assets/simple-exp-collector/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"com.kvit.SimpleExpCollector"
+		],
+		"client": [
+			"com.kvit.client.SimpleExpCollectorClient"
+		],
+		"jei_mod_plugin": [
+			"com.kvit.client.compat.jei.SimpleExpCollectorJeiPlugin"
+		]
+	},
+	"mixins": [
+		"simple-exp-collector.mixins.json"
+	],
+	"depends": {
+		"fabricloader": ">=0.18.4",
+		"minecraft": "~1.21.11",
+		"java": ">=21",
+		"fabric-api": "*"
+	},
+	"suggests": {
+		"emi": "*",
+		"roughly-enough-items": "*",
+		"jei": "*"
+	}
+}

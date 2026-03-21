@@ -1,0 +1,6 @@
+{
+	"model": {
+		"type": "minecraft:model",
+		"model": "simple-exp-collector:block/exp_collector"
+	}
+}

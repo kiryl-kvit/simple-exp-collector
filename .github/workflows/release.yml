@@ -1,0 +1,50 @@
+name: Build Release Jar
+
+on:
+  release:
+    types:
+      - published
+
+jobs:
+  build-and-upload:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Validate Gradle wrapper
+        uses: gradle/actions/wrapper-validation@v3
+
+      - name: Set up Java 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Derive mod version from release tag
+        id: version
+        env:
+          RELEASE_TAG: ${{ github.event.release.tag_name }}
+        run: |
+          VERSION="${RELEASE_TAG#v}"
+
+          if [ -z "$VERSION" ]; then
+            echo "Release tag '$RELEASE_TAG' does not contain a usable version." >&2
+            exit 1
+          fi
+
+          echo "mod_version=$VERSION" >> "$GITHUB_OUTPUT"
+
+      - name: Build release jar
+        run: ./gradlew build --no-daemon -Pmod_version=${{ steps.version.outputs.mod_version }}
+
+      - name: Upload jar to GitHub release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: build/libs/simple-exp-collector-${{ steps.version.outputs.mod_version }}.jar

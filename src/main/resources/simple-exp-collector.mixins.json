@@ -1,0 +1,13 @@
+{
+	"required": true,
+	"package": "com.kvit.mixin",
+	"compatibilityLevel": "JAVA_21",
+	"mixins": [
+		"AnvilMenuAccessor",
+		"ExperienceOrbAccessor",
+		"LivingEntityExperienceMixin"
+	],
+	"injectors": {
+		"defaultRequire": 1
+	}
+}

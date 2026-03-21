@@ -1,0 +1,18 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"category": "misc",
+	"key": {
+		"B": "minecraft:glass_bottle",
+		"S": "minecraft:sculk",
+		"E": "minecraft:ender_pearl"
+	},
+	"pattern": [
+		"SBS",
+		"BEB",
+		"SBS"
+	],
+	"result": {
+		"count": 1,
+		"id": "simple-exp-collector:exp_collector"
+	}
+}

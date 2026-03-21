@@ -1,0 +1,7 @@
+{
+	"variants": {
+		"": {
+			"model": "simple-exp-collector:block/exp_collector"
+		}
+	}
+}
