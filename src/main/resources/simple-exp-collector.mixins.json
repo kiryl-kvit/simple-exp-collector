@@ -5,6 +5,7 @@
 	"mixins": [
 		"AnvilMenuAccessor",
 		"ExperienceOrbAccessor",
+		"LivingEntityDeathLootMixin",
 		"LivingEntityExperienceMixin"
 	],
 	"injectors": {

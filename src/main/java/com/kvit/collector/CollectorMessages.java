@@ -56,6 +56,14 @@ public final class CollectorMessages {
 			.append(levelTransitionComponent(preview));
 	}
 
+	public static MutableComponent mobDropsToggleResult(Component collectorLabel, boolean disabled) {
+		ChatFormatting color = disabled ? ChatFormatting.YELLOW : ChatFormatting.GREEN;
+		return Component.empty()
+			.append(Component.literal(disabled ? "Mob drops disabled for collector " : "Mob drops enabled for collector ").withStyle(color))
+			.append(collectorLabel.copy())
+			.append(Component.literal(". XP collection stays enabled.").withStyle(ChatFormatting.GRAY));
+	}
+
 	public static String formatXp(long xp) {
 		return String.format(Locale.ROOT, "%,d", xp);
 	}
