@@ -99,6 +99,12 @@ public final class ExpCollectorManager {
 		return Optional.empty();
 	}
 
+	public static boolean areMobDropsDisabledInChunk(ServerLevel level, ChunkPos chunkPos) {
+		return getCollectorInChunk(level, chunkPos)
+			.map(ExpCollectorRecord::mobDropsDisabled)
+			.orElse(false);
+	}
+
 	public static void syncLoadedBlockEntity(ServerLevel level, ExpCollectorBlockEntity blockEntity) {
 		ExpCollectorSavedData data = getData(level);
 		BlockPos pos = blockEntity.getBlockPos();
@@ -108,7 +114,7 @@ public final class ExpCollectorManager {
 			return;
 		}
 
-		ExpCollectorRecord record = new ExpCollectorRecord(allocateNextId(level.getServer()), pos.getX(), pos.getY(), pos.getZ(), blockEntity.getStoredXp(), "");
+		ExpCollectorRecord record = new ExpCollectorRecord(allocateNextId(level.getServer()), pos.getX(), pos.getY(), pos.getZ(), blockEntity.getStoredXp(), "", false);
 		data.putIfChanged(record);
 	}
 
@@ -127,6 +133,18 @@ public final class ExpCollectorManager {
 		boolean changed = data.putIfChanged(updated);
 		syncLoadedBlockEntity(level, pos, updated);
 		return changed;
+	}
+
+	public static Optional<ExpCollectorRecord> toggleMobDrops(ServerLevel level, BlockPos pos) {
+		ExpCollectorSavedData data = getData(level);
+		ExpCollectorRecord record = data.get(pos).orElse(null);
+		if (record == null) {
+			return Optional.empty();
+		}
+
+		ExpCollectorRecord updated = record.withMobDropsDisabled(!record.mobDropsDisabled());
+		data.putIfChanged(updated);
+		return Optional.of(updated);
 	}
 
 	public static long addXp(ServerLevel level, BlockPos pos, long amount) {
@@ -262,7 +280,7 @@ public final class ExpCollectorManager {
 	}
 
 	private static ExpCollectorRecord createRecord(ServerLevel level, BlockPos pos) {
-		ExpCollectorRecord record = new ExpCollectorRecord(allocateNextId(level.getServer()), pos.getX(), pos.getY(), pos.getZ(), 0L, "");
+		ExpCollectorRecord record = new ExpCollectorRecord(allocateNextId(level.getServer()), pos.getX(), pos.getY(), pos.getZ(), 0L, "", false);
 		getData(level).putIfChanged(record);
 		return record;
 	}

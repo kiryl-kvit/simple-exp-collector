@@ -76,6 +76,12 @@ public final class ExpCommand {
 								))))
 				)
 				.then(
+					Commands.literal("toggle-drop")
+						.then(Commands.argument("target", StringArgumentType.greedyString())
+							.suggests(COLLECTOR_TARGET_SUGGESTIONS)
+							.executes(context -> toggleCollectorMobDrops(context.getSource(), StringArgumentType.getString(context, "target"))))
+				)
+				.then(
 					Commands.literal("tp")
 						.then(Commands.argument("target", StringArgumentType.greedyString())
 							.suggests(COLLECTOR_TARGET_SUGGESTIONS)
@@ -142,6 +148,22 @@ public final class ExpCommand {
 		}
 
 		source.sendSuccess(() -> CollectorMessages.renameResult(id, name), false);
+		return 1;
+	}
+
+	private static int toggleCollectorMobDrops(CommandSourceStack source, String target) {
+		CollectorReference collector = resolveCollectorTargetOrNotify(source, target).orElse(null);
+		if (collector == null) {
+			return 0;
+		}
+
+		Optional<com.kvit.data.ExpCollectorRecord> updated = ExpCollectorManager.toggleMobDrops(collector.level(), collector.blockPos());
+		if (updated.isEmpty()) {
+			source.sendFailure(Component.literal("Failed to toggle mob drops for that collector.").withStyle(ChatFormatting.RED));
+			return 0;
+		}
+
+		source.sendSuccess(() -> CollectorMessages.mobDropsToggleResult(collectorLabelComponent(collector), updated.get().mobDropsDisabled()), false);
 		return 1;
 	}
 

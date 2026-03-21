@@ -36,6 +36,7 @@ public final class ExpCollectorMenu extends ChestMenu {
 	private static final int INFO_SLOT = 4;
 	private static final int RENAME_SLOT = 10;
 	private static final int PREVIEW_SLOT = 12;
+	private static final int TOGGLE_DROP_SLOT = 13;
 	private static final int COLLECT_AMOUNT_SLOT = 14;
 	private static final int COLLECT_ALL_SLOT = 16;
 	private static final ItemStack FILLER_TEMPLATE;
@@ -106,6 +107,13 @@ public final class ExpCollectorMenu extends ChestMenu {
 					CollectorPreviewManager.toggle(serverPlayer, blockEntity);
 				}
 			}
+			case TOGGLE_DROP_SLOT -> {
+				if (player instanceof ServerPlayer serverPlayer) {
+					ExpCollectorManager.toggleMobDrops(this.level, this.pos).ifPresent(updated ->
+						serverPlayer.sendSystemMessage(CollectorMessages.mobDropsToggleResult(collectorLabel(updated.id(), updated.name()), updated.mobDropsDisabled()), false)
+					);
+				}
+			}
 			case COLLECT_AMOUNT_SLOT -> {
 				if (player instanceof ServerPlayer serverPlayer && blockEntity.getStoredXp() > 0L) {
 					this.openCollectMenu(serverPlayer);
@@ -141,6 +149,9 @@ public final class ExpCollectorMenu extends ChestMenu {
 		long storedXp = blockEntity.getStoredXp();
 		ExperiencePreview collectAllPreview = ExperiencePreview.simulate(this.viewerExperience, storedXp);
 		boolean previewing = CollectorPreviewManager.isPreviewing(this.playerId, this.level, this.pos);
+		boolean mobDropsDisabled = ExpCollectorManager.getCollector(this.level, this.pos)
+			.map(record -> record.mobDropsDisabled())
+			.orElse(false);
 		String collectorName = ExpCollectorManager.getCollector(this.level, this.pos)
 			.map(record -> record.name())
 			.filter(name -> !name.isBlank())
@@ -152,7 +163,8 @@ public final class ExpCollectorMenu extends ChestMenu {
 			Component.literal("Stored XP: " + formatXp(storedXp)).withStyle(storedXp > 0L ? ChatFormatting.GREEN : ChatFormatting.GRAY),
 			Component.literal("Your level: " + this.viewerExperience.display()).withStyle(ChatFormatting.GRAY),
 			Component.literal("Collect all -> " + collectAllPreview.expectedDisplay()).withStyle(storedXp > 0L ? ChatFormatting.AQUA : ChatFormatting.DARK_GRAY),
-			Component.literal("Working area: this chunk").withStyle(ChatFormatting.GRAY)
+			Component.literal("Working area: this chunk").withStyle(ChatFormatting.GRAY),
+			Component.literal("Mob drops: " + (mobDropsDisabled ? "disabled" : "enabled")).withStyle(mobDropsDisabled ? ChatFormatting.YELLOW : ChatFormatting.GREEN)
 		));
 
 		this.container.setItem(RENAME_SLOT, actionItem(
@@ -165,6 +177,14 @@ public final class ExpCollectorMenu extends ChestMenu {
 			previewing ? Items.ENDER_EYE : Items.SPYGLASS,
 			Component.literal(previewing ? "Hide Chunk" : "Show Chunk").withStyle(previewing ? ChatFormatting.YELLOW : ChatFormatting.GREEN),
 			Component.literal("Shows the chunk this collector works in.").withStyle(ChatFormatting.GRAY)
+		));
+
+		this.container.setItem(TOGGLE_DROP_SLOT, actionItem(
+			mobDropsDisabled ? Items.BARRIER : Items.CHEST,
+			Component.literal(mobDropsDisabled ? "Enable Mob Drops" : "Disable Mob Drops").withStyle(mobDropsDisabled ? ChatFormatting.GREEN : ChatFormatting.YELLOW),
+			Component.literal("Current: " + (mobDropsDisabled ? "disabled" : "enabled")).withStyle(mobDropsDisabled ? ChatFormatting.YELLOW : ChatFormatting.GREEN),
+			Component.literal("XP collection stays enabled.").withStyle(ChatFormatting.GRAY),
+			Component.literal(mobDropsDisabled ? "Allow mobs in this chunk to drop loot again." : "Prevent mobs in this chunk from dropping loot.").withStyle(ChatFormatting.GRAY)
 		));
 
 		boolean hasXp = storedXp > 0L;
@@ -206,12 +226,20 @@ public final class ExpCollectorMenu extends ChestMenu {
 		long collected = ExpCollectorManager.collectToPlayer(this.level, this.pos, player, storedXp);
 		if (collected > 0L) {
 			Component label = ExpCollectorManager.getCollector(this.level, this.pos)
-				.map(record -> record.hasName()
-					? CollectorMessages.collectorIdComponent(record.id()).append(Component.literal(" ")).append(CollectorMessages.namedComponent(record.name()))
-					: CollectorMessages.collectorIdComponent(record.id()))
+				.map(record -> collectorLabel(record.id(), record.name()))
 				.orElse(CollectorMessages.collectorIdComponent(0));
 			player.sendSystemMessage(CollectorMessages.collectionResult(label, collected, preview), false);
 		}
+	}
+
+	private static Component collectorLabel(int id, String name) {
+		if (name.isBlank()) {
+			return CollectorMessages.collectorIdComponent(id);
+		}
+
+		return CollectorMessages.collectorIdComponent(id)
+			.append(Component.literal(" "))
+			.append(CollectorMessages.namedComponent(name));
 	}
 
 	private ExpCollectorBlockEntity getBlockEntity() {
