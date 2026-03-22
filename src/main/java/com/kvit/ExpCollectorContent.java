@@ -30,6 +30,11 @@ import xyz.nucleoid.packettweaker.PacketContext;
 
 public final class ExpCollectorContent {
 	private static final Identifier MOD_PRESENCE_CHANNEL = ExpCollectorPresencePayload.CHANNEL_ID;
+	private static final String EXP_COLLECTOR_KEY = "block." + SimpleExpCollector.MOD_ID + ".exp_collector";
+	private static final String CONTAINER_KEY = "container." + SimpleExpCollector.MOD_ID + ".exp_collector";
+	private static final String ITEM_GROUP_KEY = "itemGroup." + SimpleExpCollector.MOD_ID + ".exp_collector";
+	private static final String EXP_COLLECTOR_NAME = "Exp Collector";
+	private static final String ITEM_GROUP_NAME = "Simple Exp Collector";
 
 	private static Block expCollector;
 	private static Item expCollectorItem;
@@ -61,11 +66,11 @@ public final class ExpCollectorContent {
 	}
 
 	public static Component expCollectorName() {
-		return Component.translatable("block." + SimpleExpCollector.MOD_ID + ".exp_collector");
+		return Component.translatableWithFallback(EXP_COLLECTOR_KEY, EXP_COLLECTOR_NAME);
 	}
 
 	public static Component menuTitle() {
-		return Component.translatable("container." + SimpleExpCollector.MOD_ID + ".exp_collector");
+		return Component.translatableWithFallback(CONTAINER_KEY, EXP_COLLECTOR_NAME);
 	}
 
 	public static void register() {
@@ -96,7 +101,7 @@ public final class ExpCollectorContent {
 		});
 
 		CreativeModeTab tab = PolymerItemGroupUtils.builder()
-			.title(Component.translatable("itemGroup.simple-exp-collector.exp_collector"))
+			.title(Component.translatableWithFallback(ITEM_GROUP_KEY, ITEM_GROUP_NAME))
 			.icon(() -> new ItemStack(Items.EXPERIENCE_BOTTLE))
 			.displayItems((params, output) -> output.accept(expCollectorItem))
 			.build();
