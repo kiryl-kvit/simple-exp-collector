@@ -1,6 +1,7 @@
 package com.kvit.network;
 
 import com.kvit.SimpleExpCollector;
+import eu.pb4.polymer.networking.api.PolymerNetworking;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.network.chat.Component;
@@ -10,6 +11,11 @@ public final class ExpCollectorVersionNetworking {
 	}
 
 	public static void register() {
+		PolymerNetworking.registerCommonVersioned(
+			ExpCollectorPresencePayload.TYPE,
+			ExpCollectorPresencePayload.PROTOCOL_VERSION,
+			ExpCollectorPresencePayload.CODEC
+		);
 		PayloadTypeRegistry.playC2S().register(ExpCollectorClientVersionPayload.TYPE, ExpCollectorClientVersionPayload.CODEC);
 		ServerPlayNetworking.registerGlobalReceiver(ExpCollectorClientVersionPayload.TYPE, (payload, context) -> {
 			String serverVersion = SimpleExpCollector.getModVersion();

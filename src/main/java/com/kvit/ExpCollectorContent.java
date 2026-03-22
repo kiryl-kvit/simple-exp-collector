@@ -3,11 +3,12 @@ package com.kvit;
 import com.kvit.blocks.expCollector.ExpCollectorBlock;
 import com.kvit.blocks.expCollector.entity.ExpCollectorBlockEntity;
 import com.kvit.items.ExpCollectorBlockItem;
+import com.kvit.network.ExpCollectorPresencePayload;
 import eu.pb4.polymer.core.api.block.PolymerBlockUtils;
 import eu.pb4.polymer.core.api.item.PolymerItemGroupUtils;
 import eu.pb4.polymer.core.api.utils.PolymerSyncedObject;
+import eu.pb4.polymer.networking.api.server.PolymerServerNetworking;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
-import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -28,7 +29,7 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import xyz.nucleoid.packettweaker.PacketContext;
 
 public final class ExpCollectorContent {
-	private static final Identifier MOD_PRESENCE_CHANNEL = SimpleExpCollector.id("client_version");
+	private static final Identifier MOD_PRESENCE_CHANNEL = ExpCollectorPresencePayload.CHANNEL_ID;
 
 	private static Block expCollector;
 	private static Item expCollectorItem;
@@ -43,7 +44,8 @@ public final class ExpCollectorContent {
 			return false;
 		}
 
-		return ServerPlayNetworking.getReceived(serverPlayer).contains(MOD_PRESENCE_CHANNEL);
+		return PolymerServerNetworking.getSupportedVersion(serverPlayer.connection, MOD_PRESENCE_CHANNEL)
+			>= ExpCollectorPresencePayload.PROTOCOL_VERSION;
 	}
 
 	public static Block expCollector() {
