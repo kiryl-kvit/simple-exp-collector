@@ -1,6 +1,6 @@
 package com.kvit.blocks.expCollector;
 
-import com.kvit.ModContent;
+import com.kvit.ExpCollectorContent;
 import com.kvit.blocks.expCollector.entity.ExpCollectorBlockEntity;
 import com.kvit.collector.ExpCollectorManager;
 import com.kvit.menu.ExpCollectorMenu;
@@ -52,7 +52,7 @@ public final class ExpCollectorBlock extends BaseEntityBlock implements PolymerB
 
 	@Override
 	public boolean canSyncRawToClient(PacketContext context) {
-		return ModContent.isModdedClient(context);
+		return ExpCollectorContent.isModdedClient(context);
 	}
 
 	@Override
@@ -84,7 +84,7 @@ public final class ExpCollectorBlock extends BaseEntityBlock implements PolymerB
 
 	@Override
 	protected boolean shouldChangedStateKeepBlockEntity(BlockState newState) {
-		return newState.is(ModContent.expCollector());
+		return newState.is(ExpCollectorContent.expCollector());
 	}
 
 	private InteractionResult openMenu(Level level, BlockPos pos, Player player) {
@@ -99,7 +99,7 @@ public final class ExpCollectorBlock extends BaseEntityBlock implements PolymerB
 		if (player instanceof ServerPlayer serverPlayer && level instanceof ServerLevel serverLevel) {
 			serverPlayer.openMenu(new SimpleMenuProvider(
 				(syncId, inventory, openPlayer) -> createMenu(syncId, inventory, serverLevel, pos, openPlayer),
-				ModContent.menuTitle()
+				ExpCollectorContent.menuTitle()
 			));
 			return InteractionResult.SUCCESS_SERVER;
 		}

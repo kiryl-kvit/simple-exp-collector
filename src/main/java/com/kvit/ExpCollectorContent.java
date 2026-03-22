@@ -27,14 +27,14 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import xyz.nucleoid.packettweaker.PacketContext;
 
-public final class ModContent {
+public final class ExpCollectorContent {
 	private static final Identifier POLYMER_SYNC_ITEMS = Identifier.fromNamespaceAndPath("polymer", "sync/items");
 
 	private static Block expCollector;
 	private static Item expCollectorItem;
 	private static BlockEntityType<ExpCollectorBlockEntity> expCollectorBlockEntity;
 
-	private ModContent() {
+	private ExpCollectorContent() {
 	}
 
 	public static boolean isModdedClient(PacketContext context) {

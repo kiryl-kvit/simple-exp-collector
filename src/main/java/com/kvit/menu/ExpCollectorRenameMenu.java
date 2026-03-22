@@ -1,9 +1,9 @@
 package com.kvit.menu;
 
-import com.kvit.ModContent;
+import com.kvit.ExpCollectorContent;
 import com.kvit.collector.CollectorMessages;
 import com.kvit.collector.ExpCollectorManager;
-import com.kvit.mixin.AnvilMenuAccessor;
+import com.kvit.mixin.ExpCollectorAnvilMenuAccessor;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
@@ -35,7 +35,7 @@ public final class ExpCollectorRenameMenu extends AnvilMenu {
 
 	@Override
 	public boolean stillValid(@NonNull Player player) {
-		return stillValid(ContainerLevelAccess.create(this.level, this.pos), player, ModContent.expCollector());
+		return stillValid(ContainerLevelAccess.create(this.level, this.pos), player, ExpCollectorContent.expCollector());
 	}
 
 	@Override
@@ -71,7 +71,7 @@ public final class ExpCollectorRenameMenu extends AnvilMenu {
 			serverPlayer.sendSystemMessage(CollectorMessages.renameResult(id, nextName));
 			serverPlayer.openMenu(new net.minecraft.world.SimpleMenuProvider(
 				(syncId, inventory, openPlayer) -> new ExpCollectorMenu(syncId, inventory, this.level, this.pos, openPlayer.getUUID()),
-				ModContent.menuTitle()
+				ExpCollectorContent.menuTitle()
 			));
 		}
 	}
@@ -117,7 +117,7 @@ public final class ExpCollectorRenameMenu extends AnvilMenu {
 		if (this.pendingName.isEmpty()) {
 			result.remove(DataComponents.CUSTOM_NAME);
 		} else {
-			result.set(DataComponents.CUSTOM_NAME, MenuComponents.plain(Component.literal(this.pendingName)));
+			result.set(DataComponents.CUSTOM_NAME, ExpCollectorMenuComponents.plain(Component.literal(this.pendingName)));
 		}
 		this.resultSlots.setItem(0, result);
 		this.clearRenameCost();
@@ -125,7 +125,7 @@ public final class ExpCollectorRenameMenu extends AnvilMenu {
 	}
 
 	private void clearRenameCost() {
-		((AnvilMenuAccessor) (Object) this).simpleExpCollector$getCostSlot().set(0);
+		((ExpCollectorAnvilMenuAccessor) (Object) this).simpleExpCollector$getCostSlot().set(0);
 	}
 
 	private void initializeInput() {
@@ -135,9 +135,9 @@ public final class ExpCollectorRenameMenu extends AnvilMenu {
 		this.pendingName = currentName;
 
 		ItemStack stack = new ItemStack(Items.NAME_TAG);
-		stack.set(DataComponents.ITEM_NAME, MenuComponents.plain(ModContent.expCollectorName()));
+		stack.set(DataComponents.ITEM_NAME, ExpCollectorMenuComponents.plain(ExpCollectorContent.expCollectorName()));
 		if (!currentName.isBlank()) {
-			stack.set(DataComponents.CUSTOM_NAME, MenuComponents.plain(Component.literal(currentName)));
+			stack.set(DataComponents.CUSTOM_NAME, ExpCollectorMenuComponents.plain(Component.literal(currentName)));
 		}
 
 		this.inputSlots.setItem(0, stack);

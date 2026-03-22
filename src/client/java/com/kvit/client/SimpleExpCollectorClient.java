@@ -1,7 +1,7 @@
 package com.kvit.client;
 
 import com.kvit.SimpleExpCollector;
-import com.kvit.network.ClientVersionPayload;
+import com.kvit.network.ExpCollectorClientVersionPayload;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
@@ -14,8 +14,8 @@ public final class SimpleExpCollectorClient implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
 		ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> {
-			if (ClientPlayNetworking.canSend(ClientVersionPayload.TYPE)) {
-				ClientPlayNetworking.send(new ClientVersionPayload(SimpleExpCollector.getModVersion()));
+			if (ClientPlayNetworking.canSend(ExpCollectorClientVersionPayload.TYPE)) {
+				ClientPlayNetworking.send(new ExpCollectorClientVersionPayload(SimpleExpCollector.getModVersion()));
 			}
 		});
 
