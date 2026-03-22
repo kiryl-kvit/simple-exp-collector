@@ -6,8 +6,8 @@ import com.kvit.items.ExpCollectorBlockItem;
 import eu.pb4.polymer.core.api.block.PolymerBlockUtils;
 import eu.pb4.polymer.core.api.item.PolymerItemGroupUtils;
 import eu.pb4.polymer.core.api.utils.PolymerSyncedObject;
-import eu.pb4.polymer.networking.api.server.PolymerServerNetworking;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -28,7 +28,7 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import xyz.nucleoid.packettweaker.PacketContext;
 
 public final class ExpCollectorContent {
-	private static final Identifier POLYMER_SYNC_ITEMS = Identifier.fromNamespaceAndPath("polymer", "sync/items");
+	private static final Identifier MOD_PRESENCE_CHANNEL = SimpleExpCollector.id("client_version");
 
 	private static Block expCollector;
 	private static Item expCollectorItem;
@@ -43,7 +43,7 @@ public final class ExpCollectorContent {
 			return false;
 		}
 
-		return PolymerServerNetworking.getSupportedVersion(serverPlayer.connection, POLYMER_SYNC_ITEMS) >= 0;
+		return ServerPlayNetworking.getReceived(serverPlayer).contains(MOD_PRESENCE_CHANNEL);
 	}
 
 	public static Block expCollector() {
