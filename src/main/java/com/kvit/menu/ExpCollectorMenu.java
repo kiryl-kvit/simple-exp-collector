@@ -1,6 +1,6 @@
 package com.kvit.menu;
 
-import com.kvit.ModContent;
+import com.kvit.ExpCollectorContent;
 import com.kvit.blocks.expCollector.entity.ExpCollectorBlockEntity;
 import com.kvit.collector.CollectorMessages;
 import com.kvit.collector.ExperiencePreview;
@@ -43,7 +43,7 @@ public final class ExpCollectorMenu extends ChestMenu {
 
 	static {
 		FILLER_TEMPLATE = new ItemStack(Items.GRAY_STAINED_GLASS_PANE);
-		FILLER_TEMPLATE.set(DataComponents.ITEM_NAME, MenuComponents.plain(Component.literal(" ")));
+		FILLER_TEMPLATE.set(DataComponents.ITEM_NAME, ExpCollectorMenuComponents.plain(Component.literal(" ")));
 	}
 
 	private final SimpleContainer container;
@@ -69,7 +69,7 @@ public final class ExpCollectorMenu extends ChestMenu {
 
 	@Override
 	public boolean stillValid(@NonNull Player player) {
-		return AbstractContainerMenu.stillValid(ContainerLevelAccess.create(this.level, this.pos), player, ModContent.expCollector());
+		return AbstractContainerMenu.stillValid(ContainerLevelAccess.create(this.level, this.pos), player, ExpCollectorContent.expCollector());
 	}
 
 	@Override
@@ -248,12 +248,12 @@ public final class ExpCollectorMenu extends ChestMenu {
 
 	private static ItemStack actionItem(Item item, Component name, Component... loreLines) {
 		ItemStack stack = new ItemStack(item);
-		stack.set(DataComponents.ITEM_NAME, MenuComponents.plain(name));
+		stack.set(DataComponents.ITEM_NAME, ExpCollectorMenuComponents.plain(name));
 
 		if (loreLines.length > 0) {
 			List<Component> lines = new ArrayList<>(loreLines.length);
 			for (Component line : loreLines) {
-				lines.add(MenuComponents.plain(line));
+				lines.add(ExpCollectorMenuComponents.plain(line));
 			}
 			stack.set(DataComponents.LORE, new ItemLore(lines));
 		}

@@ -4,7 +4,7 @@ import com.kvit.blocks.expCollector.entity.ExpCollectorBlockEntity;
 import com.kvit.collector.ExpCollectorManager;
 import com.kvit.command.ExpCommand;
 import com.kvit.config.SimpleExpCollectorConfig;
-import com.kvit.network.VersionNetworking;
+import com.kvit.network.ExpCollectorVersionNetworking;
 import com.kvit.preview.CollectorPreviewManager;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
@@ -34,8 +34,8 @@ public final class SimpleExpCollector implements ModInitializer {
 	@Override
 	public void onInitialize() {
 		config = SimpleExpCollectorConfig.load();
-		ModContent.register();
-		VersionNetworking.register();
+		ExpCollectorContent.register();
+		ExpCollectorVersionNetworking.register();
 
 		ServerWorldEvents.LOAD.register((server, world) -> ExpCollectorManager.handleWorldLoad(world));
 		ServerBlockEntityEvents.BLOCK_ENTITY_LOAD.register((blockEntity, world) -> {

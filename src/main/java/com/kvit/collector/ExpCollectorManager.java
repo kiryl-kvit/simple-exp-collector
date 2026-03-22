@@ -1,6 +1,6 @@
 package com.kvit.collector;
 
-import com.kvit.ModContent;
+import com.kvit.ExpCollectorContent;
 import com.kvit.SimpleExpCollector;
 import com.kvit.blocks.expCollector.entity.ExpCollectorBlockEntity;
 import com.kvit.data.ExpCollectorRecord;
@@ -38,7 +38,7 @@ public final class ExpCollectorManager {
 			if (!level.isLoaded(pos)) {
 				continue;
 			}
-			if (!level.getBlockState(pos).is(ModContent.expCollector())) {
+			if (!level.getBlockState(pos).is(ExpCollectorContent.expCollector())) {
 				remove(level, pos);
 				continue;
 			}
@@ -51,7 +51,7 @@ public final class ExpCollectorManager {
 		List<BlockPos> toRemove = new ArrayList<>();
 		for (ExpCollectorRecord record : data.getCollectors()) {
 			BlockPos pos = record.blockPos();
-			if (level.isLoaded(pos) && !level.getBlockState(pos).is(ModContent.expCollector())) {
+			if (level.isLoaded(pos) && !level.getBlockState(pos).is(ExpCollectorContent.expCollector())) {
 				toRemove.add(pos);
 			}
 		}
@@ -69,7 +69,7 @@ public final class ExpCollectorManager {
 			if (!new ChunkPos(recordPos).equals(chunkPos) || recordPos.equals(pos)) {
 				continue;
 			}
-			if (level.isLoaded(recordPos) && !level.getBlockState(recordPos).is(ModContent.expCollector())) {
+			if (level.isLoaded(recordPos) && !level.getBlockState(recordPos).is(ExpCollectorContent.expCollector())) {
 				remove(level, recordPos);
 				continue;
 			}
@@ -88,7 +88,7 @@ public final class ExpCollectorManager {
 			if (!new ChunkPos(recordPos).equals(chunkPos)) {
 				continue;
 			}
-			if (level.isLoaded(recordPos) && !level.getBlockState(recordPos).is(ModContent.expCollector())) {
+			if (level.isLoaded(recordPos) && !level.getBlockState(recordPos).is(ExpCollectorContent.expCollector())) {
 				remove(level, recordPos);
 				continue;
 			}

@@ -1,6 +1,6 @@
 package com.kvit.client.compat.jei;
 
-import com.kvit.ModContent;
+import com.kvit.ExpCollectorContent;
 import com.kvit.SimpleExpCollector;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
@@ -24,6 +24,6 @@ public final class SimpleExpCollectorJeiPlugin implements IModPlugin {
 	@Override
 	public void onRuntimeAvailable(IJeiRuntime jeiRuntime) {
 		jeiRuntime.getIngredientManager()
-			.addIngredientsAtRuntime(VanillaTypes.ITEM_STACK, List.of(new ItemStack(ModContent.expCollectorItem())));
+			.addIngredientsAtRuntime(VanillaTypes.ITEM_STACK, List.of(new ItemStack(ExpCollectorContent.expCollectorItem())));
 	}
 }

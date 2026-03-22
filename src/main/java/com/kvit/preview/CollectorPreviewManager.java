@@ -20,7 +20,7 @@ public final class CollectorPreviewManager {
 	private static final DustParticleOptions PARTICLE_STORED = new DustParticleOptions(0x66FF88, 2.5F);
 	private static final int PILLAR_HEIGHT = 6;
 
-	private static final Map<UUID, PreviewSession> ACTIVE_PREVIEWS = new HashMap<>();
+	private static final Map<UUID, CollectorPreviewSession> ACTIVE_PREVIEWS = new HashMap<>();
 
 	private CollectorPreviewManager() {
 	}
@@ -31,18 +31,18 @@ public final class CollectorPreviewManager {
 		}
 
 		BlockPos pos = blockEntity.getBlockPos().immutable();
-		PreviewSession current = ACTIVE_PREVIEWS.get(player.getUUID());
+		CollectorPreviewSession current = ACTIVE_PREVIEWS.get(player.getUUID());
 		if (current != null && current.dimension().equals(serverLevel.dimension()) && current.pos().equals(pos)) {
 			ACTIVE_PREVIEWS.remove(player.getUUID());
 			return;
 		}
 
 		ChunkBounds bounds = ExpCollectorManager.getChunkBounds(pos);
-		ACTIVE_PREVIEWS.put(player.getUUID(), new PreviewSession(serverLevel.dimension(), pos, bounds));
+		ACTIVE_PREVIEWS.put(player.getUUID(), new CollectorPreviewSession(serverLevel.dimension(), pos, bounds));
 	}
 
 	public static boolean isPreviewing(UUID playerId, ServerLevel level, BlockPos pos) {
-		PreviewSession session = ACTIVE_PREVIEWS.get(playerId);
+		CollectorPreviewSession session = ACTIVE_PREVIEWS.get(playerId);
 		return session != null && session.dimension().equals(level.dimension()) && session.pos().equals(pos);
 	}
 
@@ -51,9 +51,9 @@ public final class CollectorPreviewManager {
 			return;
 		}
 
-		Iterator<Map.Entry<UUID, PreviewSession>> iterator = ACTIVE_PREVIEWS.entrySet().iterator();
+		Iterator<Map.Entry<UUID, CollectorPreviewSession>> iterator = ACTIVE_PREVIEWS.entrySet().iterator();
 		while (iterator.hasNext()) {
-			Map.Entry<UUID, PreviewSession> entry = iterator.next();
+			Map.Entry<UUID, CollectorPreviewSession> entry = iterator.next();
 			ServerPlayer player = server.getPlayerList().getPlayer(entry.getKey());
 			if (player == null) {
 				iterator.remove();

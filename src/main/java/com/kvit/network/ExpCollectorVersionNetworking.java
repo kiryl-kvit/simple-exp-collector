@@ -5,13 +5,13 @@ import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.network.chat.Component;
 
-public final class VersionNetworking {
-	private VersionNetworking() {
+public final class ExpCollectorVersionNetworking {
+	private ExpCollectorVersionNetworking() {
 	}
 
 	public static void register() {
-		PayloadTypeRegistry.playC2S().register(ClientVersionPayload.TYPE, ClientVersionPayload.CODEC);
-		ServerPlayNetworking.registerGlobalReceiver(ClientVersionPayload.TYPE, (payload, context) -> {
+		PayloadTypeRegistry.playC2S().register(ExpCollectorClientVersionPayload.TYPE, ExpCollectorClientVersionPayload.CODEC);
+		ServerPlayNetworking.registerGlobalReceiver(ExpCollectorClientVersionPayload.TYPE, (payload, context) -> {
 			String serverVersion = SimpleExpCollector.getModVersion();
 			String clientVersion = payload.version();
 

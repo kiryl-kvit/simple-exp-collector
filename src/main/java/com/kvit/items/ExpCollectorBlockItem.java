@@ -1,6 +1,6 @@
 package com.kvit.items;
 
-import com.kvit.ModContent;
+import com.kvit.ExpCollectorContent;
 import com.kvit.collector.ExpCollectorManager;
 import eu.pb4.polymer.core.api.item.PolymerBlockItem;
 import net.minecraft.ChatFormatting;
@@ -60,12 +60,12 @@ public final class ExpCollectorBlockItem extends PolymerBlockItem {
 		}
 
 		ItemStack result = super.getPolymerItemStack(itemStack, tooltipType, context);
-		result.set(DataComponents.ITEM_NAME, ModContent.expCollectorName());
+		result.set(DataComponents.ITEM_NAME, ExpCollectorContent.expCollectorName());
 		return result;
 	}
 
 	@Override
 	public boolean canSyncRawToClient(PacketContext context) {
-		return ModContent.isModdedClient(context);
+		return ExpCollectorContent.isModdedClient(context);
 	}
 }

@@ -1,6 +1,6 @@
 package com.kvit.blocks.expCollector.entity;
 
-import com.kvit.ModContent;
+import com.kvit.ExpCollectorContent;
 import com.kvit.collector.ExpCollectorManager;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -15,7 +15,7 @@ public final class ExpCollectorBlockEntity extends BlockEntity {
 	private long storedXp;
 
 	public ExpCollectorBlockEntity(BlockPos pos, BlockState state) {
-		super(ModContent.expCollectorBlockEntity(), pos, state);
+		super(ExpCollectorContent.expCollectorBlockEntity(), pos, state);
 	}
 
 	public long getStoredXp() {

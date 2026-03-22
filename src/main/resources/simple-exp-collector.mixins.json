@@ -3,7 +3,7 @@
 	"package": "com.kvit.mixin",
 	"compatibilityLevel": "JAVA_21",
 	"mixins": [
-		"AnvilMenuAccessor",
+		"ExpCollectorAnvilMenuAccessor",
 		"ExperienceOrbAccessor",
 		"LivingEntityDeathLootMixin",
 		"LivingEntityExperienceMixin"

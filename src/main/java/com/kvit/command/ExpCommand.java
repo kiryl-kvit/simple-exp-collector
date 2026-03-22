@@ -1,12 +1,12 @@
 package com.kvit.command;
 
-import com.kvit.ModContent;
+import com.kvit.ExpCollectorContent;
 import com.kvit.collector.CollectorMessages;
 import com.kvit.collector.ExperiencePreview;
 import com.kvit.collector.ExpCollectorManager;
 import com.kvit.collector.ExpCollectorManager.CollectorReference;
 import com.kvit.menu.ExpCollectorMenu;
-import com.kvit.menu.MenuComponents;
+import com.kvit.menu.ExpCollectorMenuComponents;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
@@ -358,7 +358,7 @@ public final class ExpCommand {
 		}
 
 		CollectorReference collector = optionalCollector.get();
-		if (collector.level().isLoaded(collector.blockPos()) && !collector.level().getBlockState(collector.blockPos()).is(ModContent.expCollector())) {
+		if (collector.level().isLoaded(collector.blockPos()) && !collector.level().getBlockState(collector.blockPos()).is(ExpCollectorContent.expCollector())) {
 			ExpCollectorManager.remove(collector.level(), collector.blockPos());
 			return Optional.empty();
 		}
@@ -491,7 +491,7 @@ public final class ExpCommand {
 		if (!message.getSiblings().isEmpty() || message.getString().length() > 0) {
 			message.append(Component.literal("\n"));
 		}
-		message.append(MenuComponents.plain(line));
+		message.append(ExpCollectorMenuComponents.plain(line));
 	}
 
 	private record ParsedCollectRequest(String target, Long requestedAmount) {
