@@ -40,13 +40,16 @@ public final class SimpleExpCollector implements ModInitializer {
 		ServerWorldEvents.LOAD.register((server, world) -> ExpCollectorManager.handleWorldLoad(world));
 		ServerBlockEntityEvents.BLOCK_ENTITY_LOAD.register((blockEntity, world) -> {
 			if (blockEntity instanceof ExpCollectorBlockEntity collector) {
-				ExpCollectorManager.syncLoadedBlockEntity(world, collector);
+				ExpCollectorManager.queueLoadedBlockEntity(world, collector);
 			}
 		});
 		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> ExpCommand.register(dispatcher));
 		ServerTickEvents.END_WORLD_TICK.register(ExpCollectorManager::tickWorld);
 		ServerTickEvents.END_SERVER_TICK.register(CollectorPreviewManager::tick);
-		ServerLifecycleEvents.SERVER_STOPPING.register(server -> CollectorPreviewManager.clearAll());
+		ServerLifecycleEvents.SERVER_STOPPING.register(server -> {
+			CollectorPreviewManager.clearAll();
+			ExpCollectorManager.clearPendingLoadedBlockEntities();
+		});
 
 		LOGGER.info(
 			"{} initialized with preview_refresh_ticks={} orb_collection_interval_ticks={}",

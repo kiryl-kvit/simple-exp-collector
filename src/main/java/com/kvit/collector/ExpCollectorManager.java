@@ -16,19 +16,26 @@ import net.minecraft.world.phys.AABB;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 
 public final class ExpCollectorManager {
 	public static final int CHUNK_SIZE = 16;
 	public static final int MAX_NAME_LENGTH = 50;
+	private static final Map<ServerLevel, Set<BlockPos>> pendingLoadedBlockEntities = new HashMap<>();
 
 	private ExpCollectorManager() {
 	}
 
 	public static void tickWorld(ServerLevel level) {
+		flushLoadedBlockEntities(level);
+
 		if (level.getGameTime() % SimpleExpCollector.getConfig().orbCollectionIntervalTicks() != 0L) {
 			return;
 		}
@@ -97,6 +104,16 @@ public final class ExpCollectorManager {
 			}
 		}
 		return Optional.empty();
+	}
+
+	public static void queueLoadedBlockEntity(ServerLevel level, ExpCollectorBlockEntity blockEntity) {
+		pendingLoadedBlockEntities
+			.computeIfAbsent(level, unused -> new HashSet<>())
+			.add(blockEntity.getBlockPos().immutable());
+	}
+
+	public static void clearPendingLoadedBlockEntities() {
+		pendingLoadedBlockEntities.clear();
 	}
 
 	public static boolean areMobDropsDisabledInChunk(ServerLevel level, ChunkPos chunkPos) {
@@ -274,7 +291,6 @@ public final class ExpCollectorManager {
 
 			ExpCollectorRecord updated = record.withId(nextId);
 			getData(collector.level()).putIfChanged(updated);
-			syncLoadedBlockEntity(collector.level(), collector.blockPos(), updated);
 			nextId++;
 		}
 	}
@@ -325,6 +341,33 @@ public final class ExpCollectorManager {
 			}
 		}
 		return maxId;
+	}
+
+	// Defer BE reconciliation until the chunk has finished loading to avoid re-entrant lookups.
+	private static void flushLoadedBlockEntities(ServerLevel level) {
+		Set<BlockPos> pending = pendingLoadedBlockEntities.remove(level);
+		if (pending == null || pending.isEmpty()) {
+			return;
+		}
+
+		Set<BlockPos> remaining = null;
+		for (BlockPos pos : pending) {
+			if (!level.isLoaded(pos)) {
+				if (remaining == null) {
+					remaining = new HashSet<>();
+				}
+				remaining.add(pos);
+				continue;
+			}
+
+			if (level.getBlockEntity(pos) instanceof ExpCollectorBlockEntity blockEntity) {
+				syncLoadedBlockEntity(level, blockEntity);
+			}
+		}
+
+		if (remaining != null) {
+			pendingLoadedBlockEntities.computeIfAbsent(level, unused -> new HashSet<>()).addAll(remaining);
+		}
 	}
 
 	private static void syncLoadedBlockEntity(ServerLevel level, BlockPos pos, ExpCollectorRecord record) {
